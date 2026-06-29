@@ -13,6 +13,18 @@ class Users extends Component
 {
     use WithFileUploads, WithPagination;
 
+    public $query = '';
+
+    public function updatedQuery()
+    {
+        $this->resetPage();
+    }
+
+    public function search()
+    {
+        $this->resetPage();
+    }
+
     #[Validate('required|string|min:3|max:255')]
     public $name = '';
 
@@ -46,7 +58,9 @@ class Users extends Component
     {
         return view('livewire.users', [
             'title' => 'Users Page Livewire',
-            'users' => User::latest()->paginate(6),
+            'users' => User::latest()
+                ->where('name', 'like', "%$this->query%")
+                ->paginate(6),
         ]);
     }
 }
